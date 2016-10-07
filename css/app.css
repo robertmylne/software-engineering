@@ -1,0 +1,35 @@
+#backButton {
+  postition: absolute;
+  top: 0;
+  left: 0; }
+
+#searchBar input {
+  height: 80px;
+  font-size: 24px;
+  float: left; }
+
+#searchBar a {
+  position: absolute;
+  right: 60px;
+  top: 5px; }
+
+#searchBar #searchButton {
+  height: 70px;
+  widht: 100px; }
+
+#V3 .background {
+  margin-top: 10px;
+  background: #1abc9c;
+  border-radius: 5px; }
+
+#V3 .menu {
+  border-right: 2px solid black; }
+
+#V3 .menu-items {
+  width: 100%;
+  text-align: center; }
+
+#V3 .running-total {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  margin-bottom: 5px; }

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="css/app.css">
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="node_modules/materialize-css/dist/css/materialize.min.css"  media="screen,projection"/>
+    <!--Import font-awesome.css-->
+    <link type="text/css" rel="stylesheet" href="css/fonts/font-awesome.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+</head>
+<body>
+
+    <!--=========================================================
+    V1 - Search for costumer, displays the results in a table
+    ========================================================= -->
+    <section class="container" v-if="v1.show">
+        {{ phone }}
+        {{customer | json}}
+
+        <div id="searchBar">
+            <input type="text" placeholder="Enter phone number" v-model="v1.phone">
+            <a class="waves-effect waves-light btn" @click="searchByPhone()">Search</a>
+        </div>
+        {{v1 | json}}
+        <!-- Costumer found -->
+        <div class="row" v-if="v1.customerFound && v1.init">
+            <div class="col s12">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">{{ v1.customer.firstName + ' ' + v1.customer.lastName }}</span>
+                        <div class="collection">
+                            <a href="#!" class="collection-item">{{ v1.customer.phone }}</a>
+                            <a href="#!" class="collection-item">{{ v1.customer.address }}</a>
+                            <a href="#!" class="collection-item">{{ v1.customer.postCode }}</a>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center-align">
+                    <a class="waves-effect waves-light btn-large" @click="goToViewV3(true)">Create Order</a>
+                    <a class="waves-effect waves-light btn-large" @click="clearScreen">CLEAR</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- No costumer found -->
+        <div class="row" v-if="!v1.customerFound && v1.init">
+            <div class="col s12 center-align">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">No costumer found...</span>
+                    </div>
+                </div>
+
+                <a  class="waves-effect waves-light btn-large" @click="goToViewV2">Create new costumer</a>
+
+            </div>
+        </div>
+    </section>
+
+    <!--=========================================================
+    V2 - Create new costumer
+    =========================================================-->
+    <section class="container" v-if="v2.show">
+
+        <a  class="waves-effect waves-light btn" @click="goToViewV1(true)">Back</a>
+
+        <h3 class="center-align">Create new costumer</h3>
+
+        <!-- No costumer found -->
+        <div>
+            <div class="row">
+                <div class="input-field col s6">
+                    <input type="text" class="validate" v-model="v2.customer.firstName">
+                    <label class="active" for="first_name">First Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <input  type="text" class="validate" v-model="v2.customer.lastName">
+                    <label class="active" for="last_name">Last Name</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="number" class="validate" v-model="v2.customer.phone">
+                    <label class="active" for="phone_number">Phone number</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="text" class="validate" v-model="v2.customer.address">
+                    <label class="active" for="address">Address</label>
+                </div>
+                <div class="input-field col s4">
+                    <input type="text" class="validate" v-model="v2.customer.postCode">
+                    <label class="active" for="post_code">Post Code</label>
+                </div>
+                {{v2.customer|json}}
+                <p>
+                    <input id="addCreditCard" type="checkbox" v-model="v2.addCreditCard">
+                    <label for="addCreditCard">Add Credit Card</label>
+                </p>
+
+                <div class="row" v-if="v2.addCreditCard">
+                    <h5>Optional: Add credit card</h5>
+                    <div class="input-field col s6">
+                        <input type="text" class="validate" v-model="v2.creditCard.cardName">
+                        <label class="active" for="card_name">Card Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input type="number" class="validate" v-model="v2.creditCard.cardNumber">
+                        <label class="active" for="card_num">Card Number</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <input type="text" class="validate" v-model="v2.creditCard.expiryDate">
+                        <label class="active" for="card_date">Card Expiry Date</label>
+                    </div>
+                    <div class="input-field col s3">
+                        <input type="number" class="validate" v-model="v2.creditCard.cvc">
+                        <label class="active" for="card_cvc">CVC</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-align">
+                <button class="waves-effect waves-light btn" @click="createCustomer">Create new costumer</button>
+            </div>
+        </div>
+
+
+    </section>
+
+    <!--=========================================================
+    V3 - Show item menu
+    =========================================================-->
+    <section class="container" v-if="v3.show">
+
+        <a class="waves-effect waves-light btn" @click="goToViewV1(false)">Back</a>
+
+        <div class="background">
+            <div class="row">
+                <div class="col s8 menu">
+                    <h3 class="center-align">MENU</h3>
+                    {{v3.menuItems|json}}<br><br><br>
+                    {{v3.order|json}}
+                    <i id="plus-btn" class="fa fa-plus-square fa-lg"></i>
+
+                    <!-- Menu Items -->
+                    <div class="row menu-items">
+                        <div class="col s4" v-for="item in v3.order.items">
+                            <div class="card">
+                                <div class="card-image">
+                                    <img src="#">
+                                </div>
+                                <div class="card-content">
+                                    <h4>{{item.name}}</h4>
+                                </div>
+                                <div class="card-action">
+                                    <a href="#" @click="changeQuantityOf(item, '+')">Purchase</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col s4">
+                    <ul class="order-details">
+                        <li v-for="item in v3.order.items">
+                            <span v-if="item.quantity > 0">{{ item.name }}: x{{ item.quantity }} (${{ item.price * item.quantity }}.00)<a href="#" @click="changeQuantityOf(item, '+')">+</a> <a href="#" @click="changeQuantityOf(item, '-')">-</a></span>
+                        </li>
+                    </ul>
+
+                    <div class="running-total">
+                        <p>
+                            Running Total: ${{runningTotal}}.00
+                        </p>
+                    </div>
+
+                    <a id="proceedButton" class="waves-effect waves-light btn" @click="goToViewV4">Proceed</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--=========================================================
+    V4 - Confirm Order
+    =========================================================-->
+    <section class="container" v-if="v4.show">
+        {{v3.order|json}}
+        <a class="waves-effect waves-light btn" @click="goToViewV3(false)">Back</a>
+
+        <div class="background">
+            <div class="row">
+                <div class="col s12 center-align">
+                    <h3 class="center-align">Order Confirmation</h3>
+
+                    <div class="order-overview">
+                        <div class="row">
+                            <div class="col s6">
+                                <h5>Costumer Details:</h5>
+                                <div class="collection">
+                                    <a href="#!" class="collection-item">{{ v1.customer.firstName + ' ' + v1.customer.lastName }}</a>
+                                    <a href="#!" class="collection-item">{{ v1.customer.phone }}</a>
+                                    <a href="#!" class="collection-item">{{ v1.customer.address }}</a>
+                                    <a href="#!" class="collection-item">{{ v1.customer.postCode }}</a>
+                                </div>
+                            </div>
+                            <div class="col s6">
+                                <h5>Order:</h5>
+                                <ul class="collection">
+                                    <li class="collection-item" v-for="item in v3.order.items">x{{ item.quantity }} {{ item.name }} ${{ item.price * item.quantity }}.00</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preloader-wrapper big active" v-if="v4.loading">
+                        <div class="spinner-layer spinner-blue">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div><div class="gap-patch">
+                                <div class="circle"></div>
+                            </div><div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="waves-effect waves-light btn" @click="confirmOrder">Confirm Order</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+</body>
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="node_modules/materialize-css/dist/js/materialize.js"></script>
+<script type="text/javascript" src="js/ui.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
+<script>
+require('./renderer.js')
+</script>
+</html>
